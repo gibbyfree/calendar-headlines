@@ -63,17 +63,21 @@ server <- function(input, output) {
       # User has not uploaded a file yet
       return(NULL)
     }
-    read.csv(infile$datapath, header = input$header)
+    rawData <- read.csv(infile$datapath, 
+             header = input$header,
+             strip.white = TRUE)
+    dateCol <- rawData[,c(1)]
+    headlineCol <- rawData[c(2)]
   })
   
   
   # generate and render calendar 
   output$calendar <- renderPlot({
-    
+    set.seed(42)
     library(ggplot2)
     library(lubridate)
     
-    set.seed(42)
+    
     dates <- seq(as.Date("2012/01/01"), as.Date("2012/6/30"), by = "1 day")
     counts <- 1:length(dates)
     filterField <- sample(1:42,length(dates),replace=T)
